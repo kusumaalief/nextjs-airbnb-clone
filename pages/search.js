@@ -1,18 +1,17 @@
 import { Header } from "../components/Header"
 import Footer from "../components/Footer"
 import { useRouter } from "next/dist/client/router"
-import { format } from "date-fns";
-import { useEffect } from "react";
+
 import InfoCard from "../components/InfoCard";
+import Map from "../components/Map";
 
-const search = ({searchResult}) => {
-
+const search = ({searchResults}) => {
+   
    const router = useRouter();
+   const listLocation = [];
 
    const {location,startDate,endDate,numberOfGuests} = router.query;
    const rangeDate = `${startDate} - ${endDate}`;
-
-   console.log(searchResult)
 
    return (
       <div>
@@ -33,7 +32,7 @@ const search = ({searchResult}) => {
                </div>
 
                <div className="flex flex-col py-3">
-                  {searchResult.map( ({img,location,description,price,star,total,title}) => (
+                  {searchResults.map( ({img,location,description,price,star,total,title}) => (
                      <InfoCard
                         key = {img}
                         img = {img}
@@ -48,6 +47,10 @@ const search = ({searchResult}) => {
                </div>
 
             </section>
+            <section className="hidden lg:inline-flex lg:min-w-[600px]">
+               <Map searchResults={searchResults}/>
+            </section>
+
          </main>
 
 
@@ -61,12 +64,12 @@ const search = ({searchResult}) => {
 export default search
 
 export async function getServerSideProps() {
-   const searchResult = await fetch("https://links.papareact.com/isz").
+   const searchResults = await fetch("https://links.papareact.com/isz").
       then((res) => res.json());
 
    return {
       props: {
-         searchResult
+         searchResults
       }
    }
 }
